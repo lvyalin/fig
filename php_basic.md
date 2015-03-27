@@ -1,6 +1,24 @@
 PHP基础
 =======================
 
+传送门
+-----------------------
+[基础知识]
+
+-[类型][类型]
+-[变量]
+-[常量]
+-[表达式]
+-[运算符]
+-[流程控制]
+
+[类型]:http://php.net/manual/zh/language.types.php
+[变量]:http://php.net/manual/zh/language.variables.php
+[常量]:http://php.net/manual/zh/language.constants.php
+[表达式]:http://php.net/manual/zh/language.expressions.php
+[运算符]:http://php.net/manual/zh/language.operators.php
+[流程控制]:http://php.net/manual/zh/language.control-structures.php
+
 编程范式
 -----------------------
 
