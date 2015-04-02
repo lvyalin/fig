@@ -99,22 +99,20 @@ PDO是数据库连接抽象库，从PHP5.1.0开始提供，提供多种数据库
 
 假设PHP脚本接收一个数字ID作为查询参数，从数据库取回一条记录。下面是一种错误的做法：
 
-{% highlight php %}
-<?php
+```php
 $pdo = new PDO('sqlite:users.db');
 $pdo->query("SELECT name FROM users WHERE id = " . $_GET['id']); // <-- NO!
-{% endhighlight %}
+```
 
 这是非常糟糕的代码，直接在SQL中插入一个原始输入变量，导致潜在的SQL注入风险。假如黑客构造URL：
 `http://domain.com/?id=1%3BDELETE+FROM+users`来传入恶意参数id，则`$_GET['id']`的变量值为`1;DELETE FROM users`，这将删除数据表中的所有用户！因此，你应该使用PDO的绑定参数功能来处理ID输入参数。
 
-{% highlight php %}
-<?php
+```php
 $pdo = new PDO('sqlite:users.db');
 $stmt = $pdo->prepare('SELECT name FROM users WHERE id = :id');
 $stmt->bindParam(':id', $_GET['id'], PDO::PARAM_INT); // <-- Automatically sanitized by PDO
 $stmt->execute();
-{% endhighlight %}
+```
 
 这才是正确的代码，在PDO statement中绑定一个参数，使得查询被发给数据库之前，对输入参数进行转义，防止SQL注入攻击。
 
