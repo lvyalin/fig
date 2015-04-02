@@ -200,6 +200,15 @@ $stmt->execute();
 [6]: http://php.net/manual/en/security.filesystem.nullbytes.php
 [html-purifier]: http://htmlpurifier.org/
 
+### 注册全局变量
+
+**提示:**从PHP 5.4.0开始，`register_globals`配置已经删除，不再生效。保留这个配置，只是提示依赖该配置的应用进行升级。
+
+启用`register_globals`配置后，`$_POST`,`$_GET`和`$_REQUEST`中的变量自动注册为全局变量，使得应用很难辨别变量的确切来源，从而产生安全漏洞。
+
+例如：`$_GET['foo']`将注册变量`$foo`，这会覆盖程序中未声明的同名变量。如果你使用PHP5.4.0之前的版本，请确保已经把`register_globals`设置为**off**。
+
+* [Register_globals in the PHP manual](http://www.php.net/manual/en/security.globals.php)
 
 标准PHP库
 -------------------
@@ -223,9 +232,9 @@ CLI PHP编程非常强大，可以直接调用你自己的app代码而无需创�
 
 在命令行下运行PHP:
 
-{% highlight bash %}
+```php
 > php -i
-{% endhighlight %}
+```
 
 选项`-i`将会打印PHP配置，类似于[`phpinfo`][phpinfo]函数。 
 
@@ -233,7 +242,7 @@ CLI PHP编程非常强大，可以直接调用你自己的app代码而无需创�
 
 接下来写一个简单的"Hello, $name" CLI程序，先创建名为`hello.php`的脚本：
 
-{% highlight php %}
+```php
 <?php
 if($argc != 2) {
     echo "Usage: php hello.php [name].\n";
@@ -241,7 +250,7 @@ if($argc != 2) {
 }
 $name = $argv[1];
 echo "Hello, $name\n";
-{% endhighlight %}
+```
 
 PHP会在脚本运行时根据参数创建两个特殊的变量，[`$argc`][argc]是一个整数，表示参数*个数*，[`$argv`][argv]是一个数组变量，包含每个参数的*值*，
 它的第一个元素一直是PHP脚本的名字，如本例中为`hello.php`。
@@ -250,12 +259,12 @@ PHP会在脚本运行时根据参数创建两个特殊的变量，[`$argc`][argc
 
 运行上面的脚本，在命令行输入：
 
-{% highlight bash %}
+```php
 > php hello.php
 Usage: php hello.php [name]
 > php hello.php world
 Hello, world
-{% endhighlight %}
+```
 
 
  * [学习如何在命令行运行PHP][php-cli]
