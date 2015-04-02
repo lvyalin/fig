@@ -206,6 +206,49 @@ $stmt->execute();
 [psr0]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
 [psr4]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md
 
+
+缓冲
+-----------------
+### 字节码缓存
+
+在一个PHP文件被执行时，它先被编译为字节码(也称opcode)，然后这些字节码被执行。如果文件没有修改，那么字节码也会保持不变，这意味着编译这一步白白浪费了CPU资源。
+
+这就是引入字节码缓存的原因，通过把字节码保存在内存中来消除冗余的编译，重用它们完成后续的调用。配置字节码缓存非常简单，而且可以极大地提高应用的执行效率，没有理由不使用字节码缓存。
+
+PHP 5.5开始内置字节码缓存组件[OPcache](http://php.net/manual/en/book.opcache.php)，老版本的PHP可以使用第三方的字节码缓存组件，流行的字节码缓存方案有：
+
+* [APC](http://php.net/manual/en/book.apc.php) (PHP 5.4 and earlier)
+
+### 对象缓存
+
+很多时候，在代码中缓存对象可以带来很大的收益，例如获取代价很大的数据和查询结果很少变化的数据库调用。我们可以使用对象缓存系统缓存这些数据，大大加快后续的同类访问请求。如果你在取得这些数据之后，把它们缓存在系统中，在后续对这些数据的请求中，就可以直接使用缓存中的对象，这么做可以很大的提示系统性能，减少服务器的负载。
+
+很多流行的字节码缓存方案也允许你缓存自定义数据，因此我们更应该充分利用对象缓存功能。APCu、XCache和WinCache都提供API，让你把数据缓存在他们的内存cache中。
+
+使用最多的内存对象缓存系统是APCu和redis，APCu是很好的一个对象缓存方案，它提供了简单的API来让你把对象存储在内存中，而且配置和使用都非常容易，它的一个缺点是只能在本机使用。REDIS则是另外一种方式，它是一个单独的服务，可以通过网络访问，这意味着可以在一个地方写入数据，然后在不同的系统中访问这份数据。
+
+Note that when running PHP as a (Fast-)CGI application inside your webserver, every PHP process will have its own cache, i.e. APCu data is not shared between your worker processes. In these cases, you might want to consider using redis instead, as it's not tied to the PHP processes.
+
+在单机性能上，APCu通常比redis更高,但是redis提供了更多高级数据结构和更多得功能
+
+Note that prior to PHP 5.5, APC provides both an object cache and a bytecode cache. APCu is a project to bring APC's object cache to PHP 5.5+, since PHP now has a built-in bytecode cache (OPcache).
+
+学习更多对象缓存系统：
+
+* [APCu](https://github.com/krakjoe/apcu)
+* [APC Functions](http://php.net/manual/en/ref.apc.php)
+* [Memcached](http://memcached.org/)
+* [Redis](http://redis.io/)
+* [XCache APIs](http://xcache.lighttpd.net/wiki/XcacheApi)
+* [WinCache Functions](http://www.php.net/manual/en/ref.wincache.php)
+
+
+框架
+-------------------
+我们使用YAF作为基础框架参考YAF手册
+http://www.laruence.com/manual/
+
+
 安全
 -------------------
 ### Web应用安全
@@ -336,40 +379,7 @@ Hello, world
 [php-cli-windows]: http://www.php.net/manual/en/install.windows.commandline.php
 [exit-codes]: http://www.gsp.com/cgi-bin/man.cgi?section=3&topic=sysexits
 
-缓冲
------------------
-### 字节码缓存
 
-在一个PHP文件被执行时，它先被编译为字节码(也称opcode)，然后这些字节码被执行。如果文件没有修改，那么字节码也会保持不变，这意味着编译这一步白白浪费了CPU资源。
-
-这就是引入字节码缓存的原因，通过把字节码保存在内存中来消除冗余的编译，重用它们完成后续的调用。配置字节码缓存非常简单，而且可以极大地提高应用的执行效率，没有理由不使用字节码缓存。
-
-PHP 5.5开始内置字节码缓存组件[OPcache](http://php.net/manual/en/book.opcache.php)，老版本的PHP可以使用第三方的字节码缓存组件，流行的字节码缓存方案有：
-
-* [APC](http://php.net/manual/en/book.apc.php) (PHP 5.4 and earlier)
-
-### 对象缓存
-
-很多时候，在代码中缓存对象可以带来很大的收益，例如获取代价很大的数据和查询结果很少变化的数据库调用。我们可以使用对象缓存系统缓存这些数据，大大加快后续的同类访问请求。如果你在取得这些数据之后，把它们缓存在系统中，在后续对这些数据的请求中，就可以直接使用缓存中的对象，这么做可以很大的提示系统性能，减少服务器的负载。
-
-很多流行的字节码缓存方案也允许你缓存自定义数据，因此我们更应该充分利用对象缓存功能。APCu、XCache和WinCache都提供API，让你把数据缓存在他们的内存cache中。
-
-使用最多的内存对象缓存系统是APCu和redis，APCu是很好的一个对象缓存方案，它提供了简单的API来让你把对象存储在内存中，而且配置和使用都非常容易，它的一个缺点是只能在本机使用。REDIS则是另外一种方式，它是一个单独的服务，可以通过网络访问，这意味着可以在一个地方写入数据，然后在不同的系统中访问这份数据。
-
-Note that when running PHP as a (Fast-)CGI application inside your webserver, every PHP process will have its own cache, i.e. APCu data is not shared between your worker processes. In these cases, you might want to consider using redis instead, as it's not tied to the PHP processes.
-
-在单机性能上，APCu通常比redis更高,但是redis提供了更多高级数据结构和更多得功能
-
-Note that prior to PHP 5.5, APC provides both an object cache and a bytecode cache. APCu is a project to bring APC's object cache to PHP 5.5+, since PHP now has a built-in bytecode cache (OPcache).
-
-学习更多对象缓存系统：
-
-* [APCu](https://github.com/krakjoe/apcu)
-* [APC Functions](http://php.net/manual/en/ref.apc.php)
-* [Memcached](http://memcached.org/)
-* [Redis](http://redis.io/)
-* [XCache APIs](http://xcache.lighttpd.net/wiki/XcacheApi)
-* [WinCache Functions](http://www.php.net/manual/en/ref.wincache.php)
 
 XDebug
 -----------------
