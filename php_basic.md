@@ -180,25 +180,9 @@ $stmt->execute();
 
 * [了解更多PDO连接][5]
 
-### 抽象层
-
-很多框架都提供了自己的数据库抽象层，有的是基于PDO，有的不是。它们通过PHP方法来包装实际的查询，能够模拟出只存在于某些数据库系统的特性，给你一个真正的数据库抽象层。这么做会带来一些性能的损失，但是在一个需要支持MySQL、PostgreSQL和SQLite的应用中，这个损失相对于由此带来的代码一致性而言是可以接受的。
-
-有些抽象层遵循[PSR-0][psr0]或[PSR-4][psr4]命名空间标准，可以集成在任意的应用中：
-
-* [Aura SQL][6]
-* [Doctrine2 DBAL][2]
-* [Propel][7]
-* [ZF2 Db][4]
-* [ZF1 Db][3]
 
 [1]: http://www.php.net/manual/en/book.pdo.php
-[2]: http://www.doctrine-project.org/projects/dbal.html
-[3]: http://framework.zend.com/manual/en/zend.db.html
-[4]: http://packages.zendframework.com/docs/latest/manual/en/index.html#zend-db
 [5]: http://php.net/manual/en/pdo.connections.php
-[6]: https://github.com/auraphp/Aura.Sql
-[7]: http://propelorm.org/Propel/
 
 [mysql]: http://php.net/mysql
 [mysqli]: http://php.net/mysqli
@@ -207,7 +191,7 @@ $stmt->execute();
 [psr4]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md
 
 
-缓冲
+缓存
 -----------------
 ### 字节码缓存
 
